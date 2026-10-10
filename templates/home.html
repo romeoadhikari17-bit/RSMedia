@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Feed — RSMedia{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 style="margin-bottom:20px; font-size:1.4rem;">
+    Your Feed
+  </h2>
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="post-card">
+        <div class="post-author">
+          <a href="{{ url_for('profile', username=post.username) }}">
+            @{{ post.username }}
+          </a>
+        </div>
+        <div class="post-content">{{ post.content }}</div>
+        <div class="post-time">{{ post.timestamp }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <p>Nothing here yet.</p>
+      <p style="margin-top:8px;">
+        <a href="{{ url_for('find_people') }}">Follow someone</a>
+        or
+        <a href="{{ url_for('new_post') }}">make your first post</a>.
+      </p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

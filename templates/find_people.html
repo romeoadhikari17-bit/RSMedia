@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Find People — RSMedia{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 style="margin-bottom:20px;">Find People</h2>
+
+  {% if users %}
+    {% for u in users %}
+      <div class="user-row">
+        <div class="username">
+          <a href="{{ url_for('profile', username=u.username) }}">
+            <span>@</span>{{ u.username }}
+          </a>
+        </div>
+        <div>
+          {% if u.is_following %}
+            <form method="POST" action="{{ url_for('unfollow', username=u.username) }}" style="display:inline;">
+              <button class="btn btn-danger btn-sm">Unfollow</button>
+            </form>
+          {% else %}
+            <form method="POST" action="{{ url_for('follow', username=u.username) }}" style="display:inline;">
+              <button class="btn btn-success btn-sm">Follow</button>
+            </form>
+          {% endif %}
+          <a href="{{ url_for('chat', partner=u.username) }}" class="btn btn-ghost btn-sm">Message</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">No other users have registered yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Login — RSMedia{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-box">
+    <h1>RSMedia</h1>
+    <p class="subtitle">Sign in to your account</p>
+
+    <form method="POST" action="{{ url_for('login') }}">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text"
+               placeholder="Enter your username" required autofocus />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password"
+               placeholder="Enter your password" required />
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">
+        Login
+      </button>
+    </form>
+
+    <div class="divider"></div>
+    <p style="text-align:center; color:var(--fg2); font-size:.9rem;">
+      Don't have an account?
+      <a href="{{ url_for('register') }}">Register here</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

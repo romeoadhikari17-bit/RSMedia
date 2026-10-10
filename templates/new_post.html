@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}New Post — RSMedia{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h2 style="margin-bottom:20px;">What's on your mind?</h2>
+
+    <form method="POST" action="{{ url_for('new_post') }}">
+      <div class="form-group">
+        <label for="content">Post</label>
+        <textarea id="content" name="content"
+                  placeholder="Write something..."
+                  maxlength="280" required
+                  oninput="updateCount(this)"></textarea>
+        <div id="char-count">0 / 280</div>
+      </div>
+      <button type="submit" class="btn btn-primary">Publish</button>
+      <a href="{{ url_for('home') }}" class="btn btn-ghost" style="margin-left:8px;">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<script>
+  function updateCount(el) {
+    const counter = document.getElementById('char-count');
+    const n = el.value.length;
+    counter.textContent = n + ' / 280';
+    counter.className = n > 260 ? 'over' : '';
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Chat with @{{ partner }} — RSMedia{% endblock %}
+
+{% block content %}
+<div class="chat-wrap">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="{{ url_for('inbox') }}" class="btn btn-ghost btn-sm">← Back</a>
+      <span class="chat-partner">@{{ partner }}</span>
+    </div>
+    <a href="{{ url_for('call', partner=partner) }}" class="btn btn-success btn-sm">
+      Video Call
+    </a>
+  </div>
+
+  <!-- Message history -->
+  <div class="chat-messages" id="msg-container">
+    {% for m in messages %}
+      <div>
+        <div class="msg-bubble {{ 'mine' if m.sender == session.username else 'theirs' }}">
+          {{ m.body }}
+        </div>
+        <div class="msg-meta">{{ m.timestamp }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Input row -->
+  <div class="chat-input-row">
+    <input id="msg-input" type="text" placeholder="Type a message…" autocomplete="off" />
+    <button class="btn btn-primary" onclick="sendMsg()">Send</button>
+  </div>
+
+</div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  const ME      = "{{ session.username }}";
+  const PARTNER = "{{ partner }}";
+  const socket  = io();
+
+  // Join the shared chat room
+  socket.emit("join_chat", { partner: PARTNER });
+
+  // Scroll to bottom on load
+  const container = document.getElementById("msg-container");
+  container.scrollTop = container.scrollHeight;
+
+  // Receive incoming messages
+  socket.on("new_message", (data) => {
+    appendBubble(data.sender, data.body, data.timestamp);
+  });
+
+  function sendMsg() {
+    const input = document.getElementById("msg-input");
+    const body  = input.value.trim();
+    if (!body) return;
+    socket.emit("send_message", { partner: PARTNER, body });
+    input.value = "";
+    input.focus();
+  }
+
+  // Send on Enter key
+  document.getElementById("msg-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMsg();
+  });
+
+  function appendBubble(sender, body, ts) {
+    const isMine = sender === ME;
+    const wrap   = document.createElement("div");
+    const bubble = document.createElement("div");
+    const meta   = document.createElement("div");
+
+    bubble.className = "msg-bubble " + (isMine ? "mine" : "theirs");
+    bubble.textContent = body;
+
+    meta.className  = "msg-meta";
+    meta.textContent = ts || "just now";
+
+    wrap.appendChild(bubble);
+    wrap.appendChild(meta);
+    container.appendChild(wrap);
+    container.scrollTop = container.scrollHeight;
+  }
+</script>
+{% endblock %}

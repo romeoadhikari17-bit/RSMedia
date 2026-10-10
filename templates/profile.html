@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}@{{ owner }} — RSMedia{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Profile header -->
+  <div class="profile-header">
+    <h2>@{{ owner }}</h2>
+    <div class="stats">
+      <div class="stat">
+        <span class="num">{{ post_count }}</span>
+        <span class="lbl">Posts</span>
+      </div>
+      <div class="stat">
+        <span class="num">{{ follower_count }}</span>
+        <span class="lbl">Followers</span>
+      </div>
+      <div class="stat">
+        <span class="num">{{ following_count }}</span>
+        <span class="lbl">Following</span>
+      </div>
+    </div>
+
+    <!-- Follow / unfollow button (only for other users) -->
+      {% if session.username and session.username != owner %}
+      <div style="margin-top:18px; display:flex; gap:10px;">
+        {% if is_following %}
+          <form method="POST" action="{{ url_for('unfollow', username=owner) }}" style="display:inline;">
+            <button class="btn btn-danger btn-sm">Unfollow</button>
+          </form>
+        {% else %}
+          <form method="POST" action="{{ url_for('follow', username=owner) }}" style="display:inline;">
+            <button class="btn btn-success btn-sm">Follow</button>
+          </form>
+        {% endif %}
+        <a href="{{ url_for('chat', partner=owner) }}" class="btn btn-ghost btn-sm">Message</a>
+        <a href="{{ url_for('call', partner=owner) }}"  class="btn btn-primary btn-sm">Video Call</a>
+      </div>
+      {% endif %}
+  </div>
+
+  <!-- Posts -->
+  <p class="section-title">Posts</p>
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="post-card">
+        <div class="post-content">{{ post.content }}</div>
+        <div class="post-time">{{ post.timestamp }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">No posts yet.</div>
+  {% endif %}
+
+</div>
+{% endblock %}

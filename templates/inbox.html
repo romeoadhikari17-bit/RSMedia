@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Inbox — RSMedia{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+    <h2>Inbox</h2>
+    <a href="{{ url_for('find_people') }}" class="btn btn-primary btn-sm">+ New Chat</a>
+  </div>
+
+  {% if conversations %}
+    {% for c in conversations %}
+      <a href="{{ url_for('chat', partner=c.partner) }}" style="text-decoration:none;">
+        <div class="convo-row">
+          <div class="convo-left">
+            <span class="convo-partner">
+              @{{ c.partner }}
+              {% if c.unread > 0 %}
+                <span class="badge">{{ c.unread }}</span>
+              {% endif %}
+            </span>
+            <span class="convo-preview">{{ c.body }}</span>
+          </div>
+          <span class="convo-time">{{ c.timestamp }}</span>
+        </div>
+      </a>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <p>No messages yet.</p>
+      <p style="margin-top:8px;">
+        <a href="{{ url_for('find_people') }}">Find people</a> to start a conversation.
+      </p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
